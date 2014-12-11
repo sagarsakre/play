@@ -75,6 +75,8 @@ ffplay -autoexit -nodisp -loglevel panic "$pathname"
 #echo `echo $T/$pathname | sed -e 's/\/[^/]*$//'`
 }
 usage() { echo "Usage: $0 [-l <song name>] [-p <file-name>] [-a <song name> ] [-v <song name>]" 1>&2; exit 1;}
+T=$HOME
+MUSIC_DIR=$T/Music
 
 while getopts ":l:p:a:v:" o; do
     case "${o}" in
@@ -93,11 +95,11 @@ while getopts ":l:p:a:v:" o; do
             ;;
         a)
             a=${OPTARG}
-            youtube-dl "ytsearch:$a" -f 141  --restrict-filenames -o '%(title)s.%(ext)s'
+            youtube-dl "ytsearch:$a" -f 141  --no-mtime  --restrict-filenames -o $MUSIC_DIR'/%(title)s.%(ext)s'
             ;;
         v)
             d=${OPTARG}
-            youtube-dl "ytsearch:$v" -f 22  --restrict-filenames -o '%(title)s.%(ext)s'
+            youtube-dl "ytsearch:$v" -f 22   --no-mtime --restrict-filenames -o $MUSIC_DIR'/%(title)s.%(ext)s'
             ;;
         *)
             usage
