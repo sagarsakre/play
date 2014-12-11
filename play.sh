@@ -7,28 +7,28 @@ function godir () {
     fi
     T=$PWD
     list=($(find . -type f -printf "%T@ %p\n" | sort -nr | cut -d\  -f2-))
-    if [[ "${list[0]}" == "./.filelist" ]]; then
+    if [[ "${list[0]}" == "./.playlist" ]]; then
 	echo 
     else
 	echo -n "Creating index..."
-        (\cd $T; find . -wholename ./out -prune -o -wholename ./.repo -prune -o -type f > .filelist)
+        (\cd $T; find . -wholename ./out -prune -o -wholename ./.repo -prune -o -type f > .playlist)
         echo " Done"
         echo ""
     fi
-#    if [[ ! -f $T/.filelist ]]; then
+#    if [[ ! -f $T/.playlist ]]; then
 
 #        echo -n "Creating index..."
-#        (\cd $T; find . -wholename ./out -prune -o -wholename ./.repo -prune -o -type f > .filelist)
+#        (\cd $T; find . -wholename ./out -prune -o -wholename ./.repo -prune -o -type f > .playlist)
 #        echo " Done"
 #        echo ""
 #    fi
 lines=()
 for each in $1
 do
-    lines+=($(\grep -i "$each" $T/.filelist | sort | uniq))
+    lines+=($(\grep -i "$each" $T/.playlist | sort | uniq))
 done
-#    lines=($(\grep -i "$1" $T/.filelist | sort | uniq))
-#    lines=($(\grep -i "$1" $T/.filelist | sed -e 's/\/[^/]*$//' | sort | uniq))
+#    lines=($(\grep -i "$1" $T/.playlist | sort | uniq))
+#    lines=($(\grep -i "$1" $T/.playlist | sed -e 's/\/[^/]*$//' | sort | uniq))
 #	echo $lines
     if [[ ${#lines[@]} = 0 ]]; then
         echo "$1 Not found in current playlist"
