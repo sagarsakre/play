@@ -80,7 +80,7 @@ while getopts ":l:p:a:v:" o; do
         l)
             l=${OPTARG}
 	echo "$l"
-          lyrics "$l"
+          ./lyrics "$l"
             ;;
         p)
             p=${OPTARG}
