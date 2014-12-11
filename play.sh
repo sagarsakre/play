@@ -48,17 +48,29 @@ done
                 index=$(($index + 1))
             done
             echo
-            printf "%6s %s\n" "[$index]" "None of the above, download the song from internet"
+            printf "%6s %s\n" "[$index]" "Play all the above songs"
+	    echo
+            printf "%6s %s\n" "[$(($index + 1))]" "None of the above, download the song from internet"
             echo
-            printf "%6s %s\n" "[$(($index + 1))]" "Nevermind, just exit"
+            printf "%6s %s\n" "[$(($index + 2))]" "Nevermind, just exit"
             echo
             echo -n "Select one: "
             unset choice
             read choice
             if [ $choice -eq $index ]; then
+                inx=1
+                for line in ${lines[@]}; do
+                echo "Now Playing:"  "${lines[$(($inx-1))]}"
+		sleep 1
+                ffplay -autoexit -nodisp -loglevel panic "${lines[$(($inx-1))]}"
+                inx=$(($inx + 1))
+                done
+		exit
+            fi
+            if [ $choice -eq $(($index + 1)) ]; then
                   return 187
 	    fi
-            if [ $choice -eq $(($index + 1)) ]; then
+            if [ $choice -eq $(($index + 2)) ]; then
                   exit
 	    fi
             if [[ $choice -gt ${#lines[@]} || $choice -lt 1 ]]; then
