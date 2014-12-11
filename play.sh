@@ -5,13 +5,14 @@ function godir () {
         echo "Usage: godir <regex>"
         exit
     fi
-    T=$PWD
-    list=($(find . -type f -printf "%T@ %p\n" | sort -nr | cut -d\  -f2-))
-    if [[ "${list[0]}" == "./.playlist" ]]; then
+    T=$HOME
+    MUSIC_DIR=$T/Music
+    list=($(find $MUSIC_DIR -type f -printf "%T@ %p\n" | sort -nr | cut -d\  -f2-))
+    if test $T/.playlist -nt ${list[0]}; then
 	echo 
     else
 	echo -n "Creating index..."
-        (\cd $T; find . -wholename ./out -prune -o -wholename ./.repo -prune -o -type f > .playlist)
+        (\cd $T; find $MUSIC_DIR -wholename ./out -prune -o -wholename ./.git -prune -o -type f > .playlist)
         echo " Done"
         echo ""
     fi
