@@ -6,12 +6,22 @@ function godir () {
         exit
     fi
     T=$PWD
-    if [[ ! -f $T/filelist ]]; then
-        echo -n "Creating index..."
+    list=($(find . -type f -printf "%T@ %p\n" | sort -nr | cut -d\  -f2-))
+    if [[ "${list[0]}" == "./filelist" ]]; then
+	echo 
+    else
+	echo -n "Creating index..."
         (\cd $T; find . -wholename ./out -prune -o -wholename ./.repo -prune -o -type f > filelist)
         echo " Done"
         echo ""
     fi
+#    if [[ ! -f $T/filelist ]]; then
+
+#        echo -n "Creating index..."
+#        (\cd $T; find . -wholename ./out -prune -o -wholename ./.repo -prune -o -type f > filelist)
+#        echo " Done"
+#        echo ""
+#    fi
 lines=()
 for each in $1
 do
@@ -22,11 +32,11 @@ done
 #	echo $lines
     if [[ ${#lines[@]} = 0 ]]; then
         echo "$1 Not found in current playlist"
-	read -p "Do you wish to download it[Y/n]?:" yn
+	read -p "Do you wish to download it[y/N]?:" yn
 	    case $yn in
 	        [Yy]* ) return 187; break;;
-	        [Nn]* ) exit;;
-	        * ) echo "Please answer yes or no.";;
+	        [Nn]* | * ) exit;;
+#	        * ) echo "Please answer yes or no.";;
 	    esac
     fi
     if [[ ${#lines[@]} > 1 ]]; then
