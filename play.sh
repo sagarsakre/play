@@ -86,22 +86,22 @@ done
 ffplay -autoexit -nodisp -loglevel panic "$pathname" 
 #echo `echo $T/$pathname | sed -e 's/\/[^/]*$//'`
 }
-usage() { echo "Usage: $0 [-l <song name>] [-p <file-name>] [-a <song name> ] [-v <song name>]" 1>&2; exit 1;}
+usage() { echo "Usage: $0 [-l <song name>] [-p <file-name>] [-a] [-v] [-u] [-d <song-name/url>" 1>&2; exit 1;}
 T=$HOME
 #Set audio as default download format
 format=141
+#Set default as string search on youtube
+search="ytsearch:"
 MUSIC_DIR=$T/Music
 
-while getopts ":l:p:ad:vd" o; do
+while getopts ":l:p:aud:vud" o; do
     case "${o}" in
         l)
-echo "l parsed"
             l=${OPTARG}
 	echo "$l"
           ./lyrics "$l"
             ;;
         p)
-echo "p parsed"
             p=${OPTARG}
             godir ${p}
             if [ $? -eq 187 ];then
@@ -110,17 +110,17 @@ echo "p parsed"
 #            ffplay -autoexit -nodisp -loglevel panic "$p"
             ;;
         a)
-echo "a parsed"
              format=141
             ;;
         v)
-echo "v parsed"
              format=22
             ;;
+        u)
+             search=
+            ;;
         d)
-echo "d parsed"
             d=${OPTARG}
-            youtube-dl "ytsearch:$d" -f ${format}   --no-mtime --restrict-filenames -o $MUSIC_DIR'/%(title)s.%(ext)s'
+            youtube-dl "$search$d" -f ${format}   --no-mtime --restrict-filenames -o $MUSIC_DIR'/%(title)s.%(ext)s'
             ;;
 
         *)
