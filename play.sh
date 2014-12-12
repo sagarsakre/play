@@ -105,7 +105,7 @@ while getopts ":l:p:aud:vud" o; do
             p=${OPTARG}
             godir ${p}
             if [ $? -eq 187 ];then
-                ./play.sh -a "$p"
+                ./play.sh -ad "$p"
 	    fi
 #            ffplay -autoexit -nodisp -loglevel panic "$p"
             ;;
