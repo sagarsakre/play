@@ -90,14 +90,16 @@ usage() { echo "Usage: $0 [-l <song name>] [-p <file-name>] [-a <song name> ] [-
 T=$HOME
 MUSIC_DIR=$T/Music
 
-while getopts ":l:p:a:v:" o; do
+while getopts ":l:p:ad:vd" o; do
     case "${o}" in
         l)
+echo "l parsed"
             l=${OPTARG}
 	echo "$l"
           ./lyrics "$l"
             ;;
         p)
+echo "p parsed"
             p=${OPTARG}
             godir ${p}
             if [ $? -eq 187 ];then
@@ -106,13 +108,19 @@ while getopts ":l:p:a:v:" o; do
 #            ffplay -autoexit -nodisp -loglevel panic "$p"
             ;;
         a)
-            a=${OPTARG}
-            youtube-dl "ytsearch:$a" -f 141  --no-mtime  --restrict-filenames -o $MUSIC_DIR'/%(title)s.%(ext)s'
+echo "a parsed"
+             format=141
             ;;
         v)
-            v=${OPTARG}
-            youtube-dl "ytsearch:$v" -f 22   --no-mtime --restrict-filenames -o $MUSIC_DIR'/%(title)s.%(ext)s'
+echo "v parsed"
+             format=22
             ;;
+        d)
+echo "d parsed"
+            d=${OPTARG}
+            youtube-dl "ytsearch:$d" -f ${format}   --no-mtime --restrict-filenames -o $MUSIC_DIR'/%(title)s.%(ext)s'
+            ;;
+
         *)
             usage
             ;;
@@ -120,6 +128,7 @@ while getopts ":l:p:a:v:" o; do
 done
 shift $((OPTIND-1))
 
-if [ -z "${l}" ] && [ -z "${p}" ] && [ -z "${a}" ] && [ -z "${v}" ]; then
+#if [ -z "${l}" ] && [ -z "${p}" ] && [ -z "${a}" ] && [ -z "${v}" ]; then
+if [ -z "${l}" ] && [ -z "${p}" ] && [ -z "${d}" ]; then
     usage
 fi
