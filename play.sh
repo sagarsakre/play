@@ -110,10 +110,10 @@ while getopts ":l:p:aud:vud" o; do
 #            ffplay -autoexit -nodisp -loglevel panic "$p"
             ;;
         a)
-             format=141
+             format=bestaudio
             ;;
         v)
-             format=22
+             format=best
             ;;
         u)
              search=
