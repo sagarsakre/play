@@ -110,7 +110,7 @@ while getopts ":l:p:a:v:" o; do
             youtube-dl "ytsearch:$a" -f 141  --no-mtime  --restrict-filenames -o $MUSIC_DIR'/%(title)s.%(ext)s'
             ;;
         v)
-            d=${OPTARG}
+            v=${OPTARG}
             youtube-dl "ytsearch:$v" -f 22   --no-mtime --restrict-filenames -o $MUSIC_DIR'/%(title)s.%(ext)s'
             ;;
         *)
