@@ -88,6 +88,8 @@ ffplay -autoexit -nodisp -loglevel panic "$pathname"
 }
 usage() { echo "Usage: $0 [-l <song name>] [-p <file-name>] [-a <song name> ] [-v <song name>]" 1>&2; exit 1;}
 T=$HOME
+#Set audio as default download format
+format=141
 MUSIC_DIR=$T/Music
 
 while getopts ":l:p:ad:vd" o; do
