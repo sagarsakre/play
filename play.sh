@@ -5,14 +5,20 @@ function godir () {
         echo "Usage: godir <regex>"
         exit
     fi
+    if [[ -z "$2" ]]; then
+        file=".playlist"
+    else
+       file=".recently_played"
+    fi
+    echo file=$file
     T=$HOME
     MUSIC_DIR=$T/Music
     list=($(find $MUSIC_DIR -type f -printf "%T@ %p\n" | sort -nr | cut -d\  -f2-))
-    if test $T/.playlist -nt ${list[0]}; then
+    if test $T/$file -nt ${list[0]}; then
 	echo 
     else
 	echo -n "Creating index..."
-        (\cd $T; find $MUSIC_DIR -wholename ./out -prune -o -wholename ./.git -prune -o -type f > .playlist)
+        (\cd $T; find $MUSIC_DIR -wholename ./out -prune -o -wholename ./.git -prune -o -type f > $file)
         echo " Done"
         echo ""
     fi
@@ -26,7 +32,7 @@ function godir () {
 lines=()
 for each in $1
 do
-    lines+=($(\grep -i "$each" $T/.playlist | sort | uniq))
+    lines+=($(\grep -i "$each" $T/$file | sort | uniq))
 done
 #    lines=($(\grep -i "$1" $T/.playlist | sort | uniq))
 #    lines=($(\grep -i "$1" $T/.playlist | sed -e 's/\/[^/]*$//' | sort | uniq))
@@ -49,8 +55,10 @@ done
             done
             echo
             printf "%6s %s\n" "[$index]" "Play all the above songs"
+            if [[ -z $2 ]]; then
 	    echo
             printf "%6s %s\n" "[$(($index + 1))]" "None of the above, download the song from internet"
+            fi
             echo
             printf "%6s %s\n" "[$(($index + 2))]" "Nevermind, just exit"
             echo
@@ -63,6 +71,7 @@ done
                 echo "Now Playing:"  "${lines[$(($inx-1))]}"
 		sleep 1
                 ffplay -autoexit -nodisp -loglevel panic "${lines[$(($inx-1))]}"
+		echo "$pathname" >> ~/.recently_played
                 inx=$(($inx + 1))
                 done
 		exit
@@ -84,6 +93,7 @@ done
     fi
 
 ffplay -autoexit -nodisp -loglevel panic "$pathname" 
+echo "$pathname" >> ~/.recently_played
 #echo `echo $T/$pathname | sed -e 's/\/[^/]*$//'`
 }
 usage() { echo "Usage: $0 [-l <song name>] [-p <file-name>] [-a] [-v] [-u] [-d <song-name/url>" 1>&2; exit 1;}
@@ -94,7 +104,7 @@ format=141
 search="ytsearch:"
 MUSIC_DIR=$T/Music
 
-while getopts ":l:p:aud:vud" o; do
+while getopts ":l:p:aud:vud:r" o; do
     case "${o}" in
         l)
             l=${OPTARG}
@@ -121,6 +131,10 @@ while getopts ":l:p:aud:vud" o; do
         d)
             d=${OPTARG}
             youtube-dl "$search$d" -f ${format}   --no-mtime --restrict-filenames -o $MUSIC_DIR'/%(title)s.%(ext)s'
+            ;;
+        r)
+            godir "_" "dummy"
+            p="dummy"
             ;;
 
         *)
