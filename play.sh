@@ -67,8 +67,9 @@ done
                 inx=1
                 for line in ${lines[@]}; do
                 echo "Now Playing:"  "${lines[$(($inx-1))]}"
-        		notify-send "Now Playing" "$(find-song.py "$(echo ${lines[$(($inx-1))]} | rev | cut -d"/" -f1 | rev)")" -i /home/sagar/Music/icon.jpg &
-		        sleep 1
+		notify-send "Now Playing" "$(find-song.py "$(echo ${lines[$(($inx-1))]} | rev | cut -d"/" -f1 | rev | cut -f1 -d'.' |tr _ " ")")" -i /home/sagar/Music/icon.jpg
+#                notify-send "Now Playing:"  "(echo ${lines[$(($inx-1))]}| rev | cut -d"/" -f1 | rev)"
+		sleep 1
                 ffplay -autoexit -nodisp -loglevel panic "${lines[$(($inx-1))]}"
                 echo "$pathname" >> ~/.recently_played
                 inx=$(($inx + 1))
@@ -92,7 +93,7 @@ done
     fi
 
 #send graphical notification of playing song
-notify-send "Now Playing" "$(find-song.py "$(echo ${pathname}| rev | cut -d"/" -f1 | rev)")" -i /home/sagar/Music/icon.jpg &
+notify-send "Now Playing" "$(find-song.py "$(echo ${pathname}| rev | cut -d"/" -f1 | rev | cut -f1 -d'.' | tr _ " ")")" -i /home/sagar/Music/icon.jpg &
 
 ffplay -autoexit -nodisp -loglevel panic "$pathname" 
 #echo `echo $T/$pathname | sed -e 's/\/[^/]*$//'`
@@ -115,7 +116,8 @@ while getopts ":l:p:aud:vud:r" o; do
             #fetch the current running song and extract the song path
             current_song_path=$(ps aux |grep ffplay | awk {'print $16}')
             #extract only the file name
-            current_song_name=$(echo ${current_song_path}| rev | cut -d"/" -f1 | rev)
+            current_song_name=$(echo ${current_song_path}| rev | cut -d"/" -f1 | rev | cut -f1 -d'.' | tr _ " ")
+	    echo "$current_song_name"
             #find the lyrics of the song
             ./lyrics "$current_song_name"
 	else
